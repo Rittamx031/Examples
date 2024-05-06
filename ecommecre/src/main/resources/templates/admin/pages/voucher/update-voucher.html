@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Cập nhật Phiếu giảm giá </title>
+</head>
+
+<body layout:fragment="content">
+  <div class="pagetitle">
+    <h1>Phiếu giảm giá</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin">Phiếu giảm giá</a></li>
+        <li class="breadcrumb-item"><a href="/admin/voucher">Phiếu giảm giá</a></li>
+        <li class="breadcrumb-item active">Cập nhật Phiếu giảm giá</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+  <!-- Form to store new cuahang -->
+  <form enctype="multipart/form-data" th:action="@{/admin/voucher/update}" th:object="${voucherRequest}" method="post"
+    class="form container">
+    <input type="hidden" id="id" th:field="*{id}" />
+    <div class="form-group">
+      <label for="name">Tên voucher:</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}" />
+      <div th:if="${#fields.hasErrors('name')}" class="text-danger form-text" th:errors="*{name}"></div>
+    </div>
+    <div class="form-group">
+      <label for="startTime">Ngày bắt đầu:</label>
+      <input type="datetime-local" class="form-control" id="startTime" th:field="*{startTime}" />
+      <div th:if="${#fields.hasErrors('startTime')}" class="text-danger form-text" th:errors="*{startTime}"></div>
+    </div>
+    <div class="form-group">
+      <label for="endTime">Ngày kết thúc:</label>
+      <input type="datetime-local" class="form-control" id="endTime" th:field="*{endTime}"
+        th:pa="${#temporals.format(voucherRequest.endTime, 'yyyy-MM-dd HH:mm')}" />
+      <div th:if="${#fields.hasErrors('endTime')}" class="text-danger form-text" th:errors="*{endTime}"></div>
+    </div>
+    <div class="form-group">
+      <label for="quantity">Số lượng:</label>
+      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" />
+      <div th:if="${#fields.hasErrors('quantity')}" class="text-danger form-text" th:errors="*{quantity}"></div>
+    </div>
+    <div class="form-group">
+      <label for="types">Loại giảm giá:</label>
+      <input type="radio" id="percent" th:field="*{types}" value="true" name="type" class="mx-1" />
+      <label for="percent" class="mx-1">Giảm theo % </label>
+      <input type="radio" id="cash" th:field="*{types}" value="false" name="type" class="mx-1" />
+      <label for="cash" class="mx-1">Giảm theo tiền mặt</label>
+      <div th:if="${#fields.hasErrors('types')}" class="text-danger form-text" th:errors="*{types}"></div>
+    </div>
+    <div class="form-group">
+      <label for="discount">Giá trị giảm:</label>
+      <input type="number" class="form-control" id="discount" th:field="*{discount}" />
+      <div th:if="${#fields.hasErrors('discount')}" class="text-danger form-text" th:errors="*{discount}"></div>
+    </div>
+    <div class="form-group">
+      <label for="maxDiscount">Giảm tối đa:</label>
+      <input type="number" class="form-control" id="maxDiscount" th:field="*{maxDiscount}" />
+      <div th:if="${#fields.hasErrors('maxDiscount')}" class="text-danger form-text" th:errors="*{maxDiscount}"></div>
+    </div>
+    <div class="form-group">
+      <label for="minOrder">Hóa đơn tối thiểu:</label>
+      <input type="number" class="form-control" id="minOrder" th:field="*{minOrder}" />
+      <div th:if="${#fields.hasErrors('minOrder')}" class="text-danger form-text" th:errors="*{minOrder}"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="status">Trạng thái:</label>
+      <input type="radio" id="active" th:field="*{status}" value="0" name="type" class="mx-1" />
+      <label for="active" class="mx-1">Không hoạt động</label>
+      <input type="radio" id="disable" th:field="*{status}" value="1" name="type" class="mx-1" />
+      <label for="disable" class="mx-1">Hoạt Động</label>
+      <div th:if="${#fields.hasErrors('status')}" class="text-danger form-text" th:errors="*{status}"></div>
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+  </form>
+</body>
+
+</html>

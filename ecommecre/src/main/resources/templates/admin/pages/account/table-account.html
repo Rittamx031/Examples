@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html layout:decorate="~{admin/layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Tài khoản</title>
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <div class="pagetitle">
+            <h1>Tài khoản</h1>
+        </div><!-- End Page Title -->
+        <div class="container-fluid">
+            <!-- <a href="/admin/account/create" class="btn btn-primary">New</a> -->
+            <div style="height: 500px; overflow: auto;">
+                <table class="table table-hover">
+                    <thead class="position-sticky top-0">
+                        <tr>
+                            <th scope="col">Tên Khách Hàng
+                                <a th:href="@{/admin/account/sort(sortBy=customer.name ,sortDir=true)}"><i
+                                        class="fa-solid fa-sort-up fa-xs"></i></i></a>
+                                <a th:href="@{/admin/account/sort(sortBy=customer.name ,sortDir=false)}"><i
+                                        class="fa-solid fa-sort-down fa-xs"></i></a>
+                            </th>
+                            <th scope="col">Địa chỉ Email
+                                <a th:href="@{/admin/account/sort(sortBy=email ,sortDir=true)}"><i
+                                        class="fa-solid fa-sort-up fa-xs"></i></i></a>
+                                <a th:href="@{/admin/account/sort(sortBy=email ,sortDir=false)}"><i
+                                        class="fa-solid fa-sort-down fa-xs"></i></a>
+                            </th>
+                            <th scope="col">Số điện thoại
+                                <a th:href="@{/admin/account/sort(sortBy=customer.phone ,sortDir=true)}"><i
+                                        class="fa-solid fa-sort-up fa-xs"></i></i></a>
+                                <a th:href="@{/admin/account/sort(sortBy=customer.phone ,sortDir=false)}"><i
+                                        class="fa-solid fa-sort-down fa-xs"></i></a>
+                            </th>
+                            <th scope="col">Trạng thái
+                                <a th:href="@{/admin/account/sort(sortBy=status ,sortDir=true)}"><i
+                                        class="fa-solid fa-sort-up fa-xs"></i></i></a>
+                                <a th:href="@{/admin/account/sort(sortBy=status ,sortDir=false)}"><i
+                                        class="fa-solid fa-sort-down fa-xs"></i></a>
+                            </th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="account : ${list}">
+                            <td th:text="${account.customer?.name}"></td>
+                            <td th:text="${account.email}"></td>
+                            <td th:text="${account.customer?.phone}"></td>
+                            <td th:unless="${account.deleted}" th:text="${convert.statusOfAccount(account.status)}">
+                            </td>
+                            <td th:if="${account.deleted}" class="text-decoration-line-through"
+                                th:text="${convert.statusOfAccount(account.status)}">
+                            </td>
+                            <td>
+                                <a sec:authorize="hasAnyAuthority('ADMIN')" th:unless="${account.deleted}"
+                                    th:href="@{/admin/account/delete(id=${account.id})}" class="btn btn-danger"><i
+                                        class="fas fa-trash-alt"></i></a>
+                                <a sec:authorize="hasAnyAuthority('ADMIN')" th:if="${account.deleted}"
+                                    th:href="@{/admin/account/delete(id=${account.id})}" class="btn btn-secondary"><i
+                                        class="fas fa-undo-alt"></i></a>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#staticBackdrop' + ${account.id}">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                                <div class="modal fade" th:id="'staticBackdrop' + ${account.id}"
+                                    data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel"
+                                                    th:text="${account.customer?.name}"></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <p><strong>Tên</strong>: <span
+                                                            th:text="${account.customer?.name}"></span>
+                                                    </p>
+                                                    <p><strong>Số điện thoại</strong>: <span
+                                                            th:text="${account.customer?.phone}"></span>
+                                                    </p>
+                                                    <p><strong>Giới tính</strong>: <span
+                                                            th:text="${account.customer?.gender ? 'Nam' : 'Nữ'}"></span>
+                                                    </p>
+                                                    <p><strong>Địa chỉ</strong>: <span
+                                                            th:text="${account.customer?.address + ', ' +account.customer?.fulladdress}"></span>
+                                                    </p>
+                                                    <p><strong>Ngày sinh</strong>: <span
+                                                            th:text="${#temporals.format(account.customer?.birth_date, 'dd-MM-yyyy')}"></span>
+                                                    </p>
+                                                    <p> <strong>Trạng Thái :</strong> <span
+                                                            th:unless="${account.deleted}"
+                                                            th:text="${convert.statusOfAccount(account.status)}">
+                                                        </span>
+                                                        <span th:if="${account.deleted}"
+                                                            class="text-decoration-line-through"
+                                                            th:text="${convert.statusOfAccount(account.status)}">
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <hr>
+                                                <form action="#" th:action="@{/admin/account/update}" method="get"
+                                                    sec:authorize="hasAnyAuthority('ADMIN')">
+                                                    <input type="hidden" name="id" th:value="${account.id}">
+                                                    Cập Nhật Trạng Thái
+                                                    <select name="status">
+                                                        <option value="-1" th:selected="${account.status == -1}"> Xóa
+                                                        </option>
+                                                        <option value="0" th:selected="${account.status == 0}">Vô hiệu
+                                                            hóa</option>
+                                                        <option value="1" th:selected="${account.status == 1}">Kích
+                                                            hoạt</option>
+                                                    </select>
+                                                    <input type="submit" value="Save">
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer d-flex justify-content-between">
+                <div class="text-start">Trang <span th:text="${crpage}"></span> of <span
+                        th:text="${totalpage}"></span> </div>
+                <div class="text-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <div th:if="${crpage-1 < 1}">
+                                <li class="page-item disabled">
+                                    <a class="page-link" th:href="@{/admin/account/page(pageno=${crpage-1})}"
+                                        tabindex="-1" aria-disabled="true"><i class="fas fa-chevron-left fa-sm"></i></a>
+                                </li>
+                            </div>
+                            <div th:unless="${crpage-1 < 1}">
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        th:href="@{/admin/account/page(pageno=${crpage-1})}"><i class="fas fa-chevron-left fa-sm"></i></a>
+                                </li>
+                            </div>
+                            <div th:each="page : ${pagenumber}">
+                                <div th:if="${crpage == page}">
+                                    <li class="page-item disabled"><a class="page-link"
+                                            th:href="@{/admin/account/page(pageno=${page})}" th:text="${page}"
+                                            tabindex="-1" aria-disabled="true"></a>
+                                    </li>
+                                </div>
+                                <div th:unless="${crpage == page}">
+                                    <li class="page-item"><a class="page-link"
+                                            th:href="@{/admin/account/page(pageno=${page})}" th:text="${page}"></a>
+                                    </li>
+                                </div>
+                            </div>
+                            <div th:if="${crpage == totalpage}">
+                                <li class="page-item disabled">
+                                    <a class="page-link" th:href="@{/admin/account/page(pageno=${crpage+1})}"
+                                        tabindex="-1" aria-disabled="true"><i class="fas fa-chevron-right fa-sm"></i></a>
+                                </li>
+                            </div>
+                            <div th:unless="${crpage == totalpage}">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/admin/account/page(pageno=${crpage+1})}"><i class="fas fa-chevron-right fa-sm"></i></a>
+                                </li>
+                            </div>
+                        </ul>
+                    </nav><!-- End Centered Pagination -->
+                </div>
+                <form action="#" th:action="@{/admin/account/getcountrow}" method="get" id="rowCountForm">
+                    Hiển thị
+                    <select name="selectedValue" onchange="document.getElementById('rowCountForm').submit();">
+                        <option value="10" th:selected="${rowcount == 10}">10 hàng</option>
+                        <option value="20" th:selected="${rowcount == 20}">20 hàng</option>
+                        <option value="50" th:selected="${rowcount == 50}">50 hàng</option>
+                    </select>
+                </form>
+            </div>
+    </section>
+</body>ư
+
+</html>

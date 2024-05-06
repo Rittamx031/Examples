@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/goodboy/src/main/resources/static/assets/js/counter.js",
+      "request": "launch",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-GoodboyApplication<goodboy>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "ecommecre.GoodboyApplication",
+      "projectName": "goodboy",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node-terminal",
+      "name": "JavaScript Debug Terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "name": "Run Current File",
+      "request": "launch",
+      "program": "${workspaceFolder}\\goodboy\\src\\main\\resources\\static\\assets\\js\\counter.js"
+    }
+  ]
+}
